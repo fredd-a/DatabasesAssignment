@@ -6,83 +6,197 @@ Database changed
 
 QUESTION 1
 
-MariaDB [elitevideodb]> create table MEMBERSHIP( MEM_NUM varchar(10) PRIMARY KEY, MEM_FNAME VARCHAR(20),MEM_LNAME VARCHAR(20), MEM_STREET VARCHAR(20), MEM_CITY VARCHAR(20), MEM_STATE VARCHAR(5), MEM_ZIP VARCHAR(20), MEM_BALANCE INT);
-Query OK, 0 rows affected (0.067 sec)
+MariaDB [EliteVideoDB]> create table MEMBERSHIP( MEM_NUM varchar(10) PRIMARY KEY, MEM_FNAME VARCHAR(20),MEM_LNAME VARCHAR(20), MEM_STREET VARCHAR(50), MEM_CITY VARCHAR(20), MEM_STATE VARCHAR(5), MEM_ZIP VARCHAR(20), MEM_BALANCE INT);
+Query OK, 0 rows affected (0.027 sec)
 
-MariaDB [elitevideodb]> create table RENTAL (RENT_NUM VARCHAR(10) PRIMARY KEY,RENT_DATE VARCHAR(20),MEM_NUM VARCHAR(10), FOREIGN KEY(MEM_NUM) REFERENCES MEMBERSHIP(MEM_NUM));
-Query OK, 0 rows affected (0.036 sec)
+MariaDB [EliteVideoDB]> create table RENTAL (RENT_NUM VARCHAR(10) PRIMARY KEY,RENT_DATE DATE,MEM_NUM VARCHAR(10), FOREIGN KEY(MEM_NUM) REFERENCES MEMBERSHIP(MEM_NUM));
+Query OK, 0 rows affected (0.148 sec)
 
-MariaDB [elitevideodb]> create table MOVIE(MOVIE_NUM VARCHAR(10) PRIMARY KEY,MOVIE_TITLE VARCHAR(30), MOVIE_YEAR YEAR, MOVIE_COST DECIMAL(4,2),MOVIE_GENRE VARCHAR(15), PRICE_CODE VARCHAR(5), FOREIGN KEY(PRICE_CODE) REFERENCES PRICE(PRICE_CODE) ON UPDATE CASCADE);
-Query OK, 0 rows affected (0.053 sec)
+MariaDB [EliteVideoDB]> create table PRICE(PRICE_CODE VARCHAR(5) PRIMARY KEY, PRICE_DESCRIPTION VARCHAR(20), PRICE_RENTFEE DECIMAL(4,2), PRICE_DAILYLATEFEE DECIMAL(4,2));
+Query OK, 0 rows affected (0.011 sec)
 
-MariaDB [elitevideodb]> create table VIDEO(VID_NUM VARCHAR(10) PRIMARY KEY,VID_INDATE DATE,MOVIE_NUM VARCHAR(10), FOREIGN KEY(MOVIE_NUM) REFERENCES MOVIE(MOVIE_NUM) ON UPDATE CASCADE);
-Query OK, 0 rows affected (0.046 sec)
+MariaDB [EliteVideoDB]> create table MOVIE(MOVIE_NUM VARCHAR(10) PRIMARY KEY,MOVIE_TITLE VARCHAR(30), MOVIE_YEAR YEAR, MOVIE_COST DECIMAL(4,2),MOVIE_GENRE VARCHAR(15), PRICE_CODE VARCHAR(5), FOREIGN KEY(PRICE_CODE) REFERENCES PRICE(PRICE_CODE) ON UPDATE CASCADE);
+Query OK, 0 rows affected (0.032 sec)
 
-MariaDB [elitevideodb]> create table PRICE(PRICE_CODE VARCHAR(5) PRIMARY KEY, PRICE_DESCRIPTION VARCHAR(20), PRICE_RENTFEE DECIMAL(4,2), PRICE_DAILYLATEFEE DECIMAL(4,2));
-Query OK, 0 rows affected (0.055 sec)
+MariaDB [EliteVideoDB]> create table VIDEO(VID_NUM VARCHAR(10) PRIMARY KEY,VID_INDATE DATE,MOVIE_NUM VARCHAR(10), FOREIGN KEY(MOVIE_NUM) REFERENCES MOVIE(MOVIE_NUM) ON UPDATE CASCADE);
+Query OK, 0 rows affected (0.020 sec)
 
-MariaDB [elitevideodb]> create table DETAILRENTAL(RENT_NUM VARCHAR(10), VID_NUM VARCHAR(10), DETAIL_FEE DECIMAL(4,2),DETAIL_DUEDATE VARCHAR(20), DETAIL_RETURNDATE VARCHAR(20), DETAIL_DAILYLATEFEE DECIMAL(4,2), PRIMARY KEY(RENT_NUM, VID_NUM), FOREIGN KEY(RENT_NUM) REFERENCES RENTAL(RENT_NUM), FOREIGN KEY(VID_NUM) REFERENCES VIDEO(VID_NUM) ON UPDATE CASCADE);
-Query OK, 0 rows affected (0.022 sec)
+MariaDB [EliteVideoDB]> create table DETAILRENTAL(RENT_NUM VARCHAR(10), VID_NUM VARCHAR(10), DETAIL_FEE DECIMAL(4,2),DETAIL_DUEDATE DATE, DETAIL_RETURNDATE DATE, DETAIL_DAILYLATEFEE DECIMAL(4,2), PRIMARY KEY(RENT_NUM, VID_NUM), FOREIGN KEY(RENT_NUM) REFERENCES RENTAL(RENT_NUM), FOREIGN KEY(VID_NUM) REFERENCES VIDEO(VID_NUM) ON UPDATE CASCADE);
+Query OK, 0 rows affected (0.039 sec)
 
-MariaDB [elitevideodb]> SHOW TABLES;
+MariaDB [EliteVideoDB]> SHOW TABLES;
 +------------------------+
 | Tables_in_elitevideodb |
 +------------------------+
-| detailrental           | 
+| detailrental           |
 | membership             |
 | movie                  |
 | price                  |
 | rental                 |
 | video                  |
 +------------------------+
-6 rows in set (0.003 sec)
+6 rows in set (0.010 sec)
+
 
 QUESTION 2
 MariaDB [EliteVideoDB]>  INSERT INTO MEMBERSHIP(MEM_NUM, MEM_FNAME, MEM_LNAME, MEM_STREET, MEM_CITY, MEM_STATE, MEM_ZIP, MEM_BALANCE) VALUES('102','Tami','Dawson','2632 Takli Circle', 'Norene', 'TN', '37136','11'),('103', 'Curt', 'Knight','4025 Cornell Court', 'Flatgap', 'KY', '41219', '6'),('104', 'Jamal', 'Melendez', '788 East 145th Avenue', 'Quebeck', 'TN', '38579', '0'),('105', 'Iva', 'Mcclain', '6045 Musket Ball Circle', 'Summit', 'KY', '42783', '15'),('106', 'Miranda', 'Parks', '4469 Maxwell Place', 'Germantown', 'TN', '38183', '0'),('107', 'Rosario', 'Elliott', '7578 Danner Avenue', 'Columbia', 'TN', '38402', '5'),('108', 'Mattie', 'Guy', '4390 Evergreen Street', 'Lily', 'KY', '40740', '0'),('109', 'Clint', 'Ochoa', '1711 Elm Street', 'Greeneville', 'TN', '37745', '10'),('110', 'Lewis', 'Rosales', '4524 Southwind Circle', 'Counce', 'TN', '38326', '0'),('111', 'Stacy', 'Mann', '2789 East Cook Avenue', 'Murfreesboro', 'TN', '37132', '8'),('112', 'Luis', 'Trujillo', '7267 Melvin Avenue', 'Heiskell', 'TN', '37754', '3'),('113', 'Minnie', 'Gonzales', '6430 Vasili Drive', 'Williston', 'TN', '38076', '0');
 Query OK, 12 rows affected (0.035 sec)
 Records: 12  Duplicates: 0  Warnings: 0
 
-MariaDB [EliteVideoDB]> INSERT INTO RENTAL(RENT_NUM, RENT_DATE,MEM_NUM) VALUES('1001', '01-MAR-16', '103'),('1002', '01-MAR-16', '105'),('1003', '02-MAR-16', '102'),('1004', '02-MAR-16', '110'),('1005', '02-MAR-16', '111'),('1006', '02-MAR-16', '107'),('1007', '02-MAR-16', '104'),('1008', '03-MAR-16', '105'),('1009', '03-MAR-16', '111');
-Query OK, 9 rows affected (0.018 sec)
+MariaDB [EliteVideoDB]> SELECT * FROM MEMBERSHIP;
++---------+-----------+-----------+-------------------------+--------------+-----------+---------+-------------+
+| MEM_NUM | MEM_FNAME | MEM_LNAME | MEM_STREET              | MEM_CITY     | MEM_STATE | MEM_ZIP | MEM_BALANCE |
++---------+-----------+-----------+-------------------------+--------------+-----------+---------+-------------+
+| 102     | Tami      | Dawson    | 2632 Takli Circle       | Norene       | TN        | 37136   |          11 |
+| 103     | Curt      | Knight    | 4025 Cornell Court      | Flatgap      | KY        | 41219   |           6 |
+| 104     | Jamal     | Melendez  | 788 East 145th Avenue   | Quebeck      | TN        | 38579   |           0 |
+| 105     | Iva       | Mcclain   | 6045 Musket Ball Circle | Summit       | KY        | 42783   |          15 |
+| 106     | Miranda   | Parks     | 4469 Maxwell Place      | Germantown   | TN        | 38183   |           0 |
+| 107     | Rosario   | Elliott   | 7578 Danner Avenue      | Columbia     | TN        | 38402   |           5 |
+| 108     | Mattie    | Guy       | 4390 Evergreen Street   | Lily         | KY        | 40740   |           0 |
+| 109     | Clint     | Ochoa     | 1711 Elm Street         | Greeneville  | TN        | 37745   |          10 |
+| 110     | Lewis     | Rosales   | 4524 Southwind Circle   | Counce       | TN        | 38326   |           0 |
+| 111     | Stacy     | Mann      | 2789 East Cook Avenue   | Murfreesboro | TN        | 37132   |           8 |
+| 112     | Luis      | Trujillo  | 7267 Melvin Avenue      | Heiskell     | TN        | 37754   |           3 |
+| 113     | Minnie    | Gonzales  | 6430 Vasili Drive       | Williston    | TN        | 38076   |           0 |
++---------+-----------+-----------+-------------------------+--------------+-----------+---------+-------------+
+12 rows in set (0.001 sec)
+
+MariaDB [EliteVideoDB]> INSERT INTO RENTAL(RENT_NUM, RENT_DATE,MEM_NUM) VALUES('1001', '2016-03-01', '103'),('1002', '2016-03-01', '105'),('1003', '206-03-02', '102'),('1004', '2016-03-02', '110'),('1005', '2016-03-02', '111'),('1006', '2016-03-02', '107'),('1007', '2016-03-02', '104'),('1008', '2016-03-03', '105'),('1009', '2016-03-03', '111');
+Query OK, 9 rows affected (0.005 sec)
 Records: 9  Duplicates: 0  Warnings: 0
+
+MariaDB [EliteVideoDB]> SELECT RENT_NUM,UPPER(DATE_FORMAT(RENT_DATE,'%d-%b-%y')) AS RENT_DATE,MEM_NUM FROM RENTAL;
++----------+-----------+---------+
+| RENT_NUM | RENT_DATE | MEM_NUM |
++----------+-----------+---------+
+| 1001     | 01-MAR-16 | 103     |
+| 1002     | 01-MAR-16 | 105     |
+| 1003     | 02-MAR-06 | 102     |
+| 1004     | 02-MAR-16 | 110     |
+| 1005     | 02-MAR-16 | 111     |
+| 1006     | 02-MAR-16 | 107     |
+| 1007     | 02-MAR-16 | 104     |
+| 1008     | 03-MAR-16 | 105     |
+| 1009     | 03-MAR-16 | 111     |
++----------+-----------+---------+
+9 rows in set (0.007 sec)
 
 MariaDB [EliteVideoDB]> INSERT INTO PRICE(PRICE_CODE,PRICE_DESCRIPTION,PRICE_RENTFEE,PRICE_DAILYLATEFEE) VALUES('1', 'Standard', '2', '1'),('2', 'New Release', '3.5', '3'),('3', 'Discount', '1.5', '1'),('4', 'Weekly Special', '1', '.5');
 Query OK, 4 rows affected (0.245 sec)
 Records: 4  Duplicates: 0  Warnings: 0
 
-INSERT INTO MOVIE(MOVIE_NUM,MOVIE_TITLE,MOVIE_YEAR,MOVIE_COST,MOVIE_GENRE,PRICE_CODE) VALUES('1234', 'The Cesar Family Christmas', '2014', '39.95', 'FAMILY', '2'),('1235', 'Smokey Mountain Wildlife', '2011', '59.95', 'ACTION', '1'),('1236', 'Richard Goodhope', '2015', '59.95', 'DRAMA', '2'),('1237', 'Beatnik Fever', '2014', '29.95', 'COMEDY', '2'),('1238', 'Constant Companion', '2015', '89.95', 'DRAMA',NULL),('1239', 'Where Hope Dies', '2005', '25.49', 'DRAMA', '3'),('1245', 'Time to Burn', '2012', '45.49', 'ACTION', '1'),('1246', "What He Doesn't Know", '2013', '58.29', 'COMEDY', '1');
+MariaDB [EliteVideoDB]> SELECT * FROM PRICE;
++------------+-------------------+---------------+--------------------+
+| PRICE_CODE | PRICE_DESCRIPTION | PRICE_RENTFEE | PRICE_DAILYLATEFEE |
++------------+-------------------+---------------+--------------------+
+| 1          | Standard          |          2.00 |               1.00 |
+| 2          | New Release       |          3.50 |               3.00 |
+| 3          | Discount          |          1.50 |               1.00 |
+| 4          | Weekly Special    |          1.00 |               0.50 |
++------------+-------------------+---------------+--------------------+
+4 rows in set (0.000 sec)
 
 
-MariaDB [EliteVideoDB]> INSERT INTO VIDEO(VID_NUM,VID_INDATE,MOVIE_NUM) VALUES('54321', '18-JUN-15', '1234'),('54324', '18-JUN-15', '1234'),('54325', '18-JUN-15', '1234'),('34341', '22-JAN-14', '1235'),('34342', '22-JAN-14', '1235'),('34366', '02-MAR-16', '1236'),('34367', '02-MAR-16', '1236'),('34368', '02-MAR-16', '1236'),('34369', '02-MAR-16', '1236'),('44392', '21-OCT-15', '1237'),('44397', '21-OCT-15', '1237'),('59237', '14-FEB-16', '1237'),('61388', '25-JAN-14', '1239'),('61353', '28-JAN-13', '1245'),('61354', '28-JAN-13', '1245'),('61367', '30-JUL-15', '1246'),('61369', '30-JUL-15', '1246');
-Query OK, 17 rows affected (0.004 sec)
+MariaDB [EliteVideoDB]> INSERT INTO MOVIE(MOVIE_NUM,MOVIE_TITLE,MOVIE_YEAR,MOVIE_COST,MOVIE_GENRE,PRICE_CODE) VALUES('1234', 'The Cesar Family Christmas', '2014', '39.95', 'FAMILY', '2'),('1235', 'Smokey Mountain Wildlife', '2011', '59.95', 'ACTION', '1'),('1236', 'Richard Goodhope', '2015', '59.95', 'DRAMA', '2'),('1237', 'Beatnik Fever', '2014', '29.95', 'COMEDY', '2'),('1238', 'Constant Companion', '2015', '89.95', 'DRAMA',NULL),('1239', 'Where Hope Dies', '2005', '25.49', 'DRAMA', '3'),('1245', 'Time to Burn', '2012', '45.49', 'ACTION', '1'),('1246', "What He Doesn't Know", '2013', '58.29', 'COMEDY', '1');
+Query OK, 8 rows affected (0.004 sec)
+Records: 8  Duplicates: 0  Warnings: 0
+
+
+MariaDB [EliteVideoDB]> SELECT * FROM MOVIE;
++-----------+----------------------------+------------+------------+-------------+------------+
+| MOVIE_NUM | MOVIE_TITLE                | MOVIE_YEAR | MOVIE_COST | MOVIE_GENRE | PRICE_CODE |
++-----------+----------------------------+------------+------------+-------------+------------+
+| 1234      | The Cesar Family Christmas |       2014 |      39.95 | FAMILY      | 2          |
+| 1235      | Smokey Mountain Wildlife   |       2011 |      59.95 | ACTION      | 1          |
+| 1236      | Richard Goodhope           |       2015 |      59.95 | DRAMA       | 2          |
+| 1237      | Beatnik Fever              |       2014 |      29.95 | COMEDY      | 2          |
+| 1238      | Constant Companion         |       2015 |      89.95 | DRAMA       | NULL       |
+| 1239      | Where Hope Dies            |       2005 |      25.49 | DRAMA       | 3          |
+| 1245      | Time to Burn               |       2010 |      45.49 | ACTION      | 1          |
+| 1246      | What He Doesn't Know       |       2013 |      58.29 | COMEDY      | 1          |
++-----------+----------------------------+------------+------------+-------------+------------+
+8 rows in set (0.001 sec)
+
+MariaDB [EliteVideoDB]>  INSERT INTO VIDEO(VID_NUM,VID_INDATE,MOVIE_NUM) VALUES('54321', '2015-06-18', '1234'),('54324', '2015-06-18', '1234'),('54325', '2015-06-18', '1234'),('34341', '2014-01-22', '1235'),('34342', '2014-01-22', '1235'),('34366', '2016-03-02', '1236'),('34367', '2016-03-02', '1236'),('34368', '2016-03-02', '1236'),('34369', '2016-03-02', '1236'),('44392', '2015-10-21', '1237'),('44397', '2015-10-21', '1237'),('59237', '2016-02-14', '1237'),('61388', '2014-01-25', '1239'),('61353', '2013-01-28', '1245'),('61354', '2013-01-28', '1245'),('61367', '2015-07-30', '1246'),('61369', '2015-07-30', '1246');
+Query OK, 17 rows affected (0.005 sec)
 Records: 17  Duplicates: 0  Warnings: 0
 
-MariaDB [elitevideodb]>  INSERT INTO DETAILRENTAL(RENT_NUM,VID_NUM,DETAIL_FEE,DETAIL_DUEDATE,DETAIL_RETURNDATE,DETAIL_DAILYLATEFEE) VALUES('1001', '34342', '2', '04-MAR-16', '02-MAR-16', NULL),('1001', '61353', '2', '04-MAR-16', '03-MAR-16', '1'),('1002', '59237', '3.5', '04-MAR-16', '04-MAR-16', '3'),('1003', '54325', '3.5', '04-MAR-16', '09-MAR-16', '3'),('1003', '61369', '2', '06-MAR-16', '09-MAR-16', '1'),('1003', '61388', '0', '06-MAR-16', '09-MAR-16', '1'),('1004', '44392', '3.5', '05-MAR-16', '07-MAR-16', '3'),('1004', '34367', '3.5', '05-MAR-16', '07-MAR-16', '3'),('1004', '34341', '2', '07-MAR-16', '07-MAR-16', '1'),('1005', '34342', '2', '07-MAR-16', '05-MAR-16', '1'),('1005', '44397', '3.5', '05-MAR-16', '05-MAR-16', '3'),('1006', '34366', '3.5', '05-MAR-16', '04-MAR-16', '3'),('1006', '61367', '2', '07-MAR-16', NULL, '1'),('1007', '34368', '3.5', '05-MAR-16', NULL, '3'),('1008', '34369', '3.5', '05-MAR-16', '05-MAR-16', '3'),('1009', '54324', '3.5', '05-MAR-16', NULL, '3'),('1001', '34366', '3.5', '04-MAR-16', '02-MAR-16', '3');
-Query OK, 17 rows affected (0.017 sec)
+MariaDB [EliteVideoDB]> SELECT VID_NUM,UPPER(DATE_FORMAT(VID_INDATE,'%d-%b-%y')) AS VID_INDATE,MOVIE_NUM FROM VIDEO;
++---------+------------+-----------+
+| VID_NUM | VID_INDATE | MOVIE_NUM |
++---------+------------+-----------+
+| 34341   | 22-JAN-14  | 1235      |
+| 34342   | 22-JAN-14  | 1235      |
+| 34366   | 02-MAR-16  | 1236      |
+| 34367   | 02-MAR-16  | 1236      |
+| 34368   | 02-MAR-16  | 1236      |
+| 34369   | 02-MAR-16  | 1236      |
+| 44392   | 21-OCT-15  | 1237      |
+| 44397   | 21-OCT-15  | 1237      |
+| 54321   | 18-JUN-15  | 1234      |
+| 54324   | 18-JUN-15  | 1234      |
+| 54325   | 18-JUN-15  | 1234      |
+| 59237   | 14-FEB-16  | 1237      |
+| 61353   | 28-JAN-13  | 1245      |
+| 61354   | 28-JAN-13  | 1245      |
+| 61367   | 30-JUL-15  | 1246      |
+| 61369   | 30-JUL-15  | 1246      |
+| 61388   | 25-JAN-14  | 1239      |
++---------+------------+-----------+
+17 rows in set (0.001 sec)
+
+MariaDB [EliteVideoDB]>  INSERT INTO DETAILRENTAL(RENT_NUM,VID_NUM,DETAIL_FEE,DETAIL_DUEDATE,DETAIL_RETURNDATE,DETAIL_DAILYLATEFEE) VALUES('1001', '34342', '2', '2016-03-04', '2016-03-02', NULL),('1001', '61353', '2', '2016-03-04', '2016-03-03', '1'),('1002', '59237', '3.5', '2016-03-04', '2016-03-04', '3'),('1003', '54325', '3.5', '2016-03-04', '2016-03-09', '3'),('1003', '61369', '2', '2016-03-06', '2016-03-09', '1'),('1003', '61388', '0', '2016-03-06', '2016-03-09', '1'),('1004', '44392', '3.5', '2016-03-05', '2016-03-07', '3'),('1004', '34367', '3.5', '2016-03-05', '2016-03-07', '3'),('1004', '34341', '2', '2016-03-07', '2016-03-07', '1'),('1005', '34342', '2', '2016-03-07', '2016-03-05', '1'),('1005', '44397', '3.5', '2016-03-05', '2016-03-05', '3'),('1006', '34366', '3.5', '2016-03-05', '2016-03-04', '3'),('1006', '61367', '2', '2016-03-07', NULL, '1'),('1007', '34368', '3.5', '2016-03-05', NULL, '3'),('1008', '34369', '3.5', '2016-03-05', '2016-03-05', '3'),('1009', '54324', '3.5', '2016-03-05', NULL, '3'),('1001', '34366', '3.5', '2016-03-04', '2016-03-02', '3');
+Query OK, 17 rows affected (0.006 sec)
 Records: 17  Duplicates: 0  Warnings: 0
+
+
+
+MariaDB [EliteVideoDB]> SELECT RENT_NUM,VID_NUM,DETAIL_FEE,UPPER(DATE_FORMAT(DETAIL_DUEDATE,'%d-%b-%y')) AS DETAIL_DUEDATE,UPPER(DATE_FORMAT(DETAIL_RETURNDATE,'%d-%b-%y')) AS DETAIL_RETURNDATE,DETAIL_DAILYLATEFEE FROM DETAILRENTAL;
++----------+---------+------------+----------------+-------------------+---------------------+
+| RENT_NUM | VID_NUM | DETAIL_FEE | DETAIL_DUEDATE | DETAIL_RETURNDATE | DETAIL_DAILYLATEFEE |
++----------+---------+------------+----------------+-------------------+---------------------+
+| 1001     | 34342   |       2.00 | 04-MAR-16      | 02-MAR-16         |                NULL |
+| 1001     | 34366   |       3.50 | 04-MAR-16      | 02-MAR-16         |                3.00 |
+| 1001     | 61353   |       2.00 | 04-MAR-16      | 03-MAR-16         |                1.00 |
+| 1002     | 59237   |       3.50 | 04-MAR-16      | 04-MAR-16         |                3.00 |
+| 1003     | 54325   |       3.50 | 04-MAR-16      | 09-MAR-16         |                3.00 |
+| 1003     | 61369   |       2.00 | 06-MAR-16      | 09-MAR-16         |                1.00 |
+| 1003     | 61388   |       0.00 | 06-MAR-16      | 09-MAR-16         |                1.00 |
+| 1004     | 34341   |       2.00 | 07-MAR-16      | 07-MAR-16         |                1.00 |
+| 1004     | 34367   |       3.50 | 05-MAR-16      | 07-MAR-16         |                3.00 |
+| 1004     | 44392   |       3.50 | 05-MAR-16      | 07-MAR-16         |                3.00 |
+| 1005     | 34342   |       2.00 | 07-MAR-16      | 05-MAR-16         |                1.00 |
+| 1005     | 44397   |       3.50 | 05-MAR-16      | 05-MAR-16         |                3.00 |
+| 1006     | 34366   |       3.50 | 05-MAR-16      | 04-MAR-16         |                3.00 |
+| 1006     | 61367   |       2.00 | 07-MAR-16      | NULL              |                1.00 |
+| 1007     | 34368   |       3.50 | 05-MAR-16      | NULL              |                3.00 |
+| 1008     | 34369   |       3.50 | 05-MAR-16      | 05-MAR-16         |                3.00 |
+| 1009     | 54324   |       3.50 | 05-MAR-16      | NULL              |                3.00 |
++----------+---------+------------+----------------+-------------------+---------------------+
+17 rows in set (0.001 sec)
 
 QUESTION 3
 
-MariaDB [elitevideodb]> SELECT MOVIE_YEAR FROM MOVIE WHERE MOVIE_NUM = 1245;
-+ - - - - - - - - - - - - +
-| MOVIE_YEAR              |
-+ - - - - - - - - - - - - +
-|       2012              |
-+ - - - - - - - - - - - - +
-1 row in set (0.035 sec)
+MariaDB [EliteVideoDB]> SELECT * FROM MOVIE WHERE MOVIE_NUM = 1245;
++-----------+--------------+------------+------------+-------------+------------+
+| MOVIE_NUM | MOVIE_TITLE  | MOVIE_YEAR | MOVIE_COST | MOVIE_GENRE | PRICE_CODE |
++-----------+--------------+------------+------------+-------------+------------+
+| 1245      | Time to Burn |       2012 |      45.49 | ACTION      | 1          |
++-----------+--------------+------------+------------+-------------+------------+
+1 row in set (0.002 sec)
 
-MariaDB [elitevideodb]> UPDATE MOVIE SET MOVIE_YEAR =  2010 WHERE MOVIE_NUM = 1245;
-Query OK, 1 row affected (0.003 sec)
+MariaDB [EliteVideoDB]> UPDATE MOVIE SET MOVIE_YEAR =  2010 WHERE MOVIE_NUM = 1245;
+Query OK, 1 row affected (0.005 sec)
 Rows matched: 1  Changed: 1  Warnings: 0
 
-MariaDB [elitevideodb]> SELECT MOVIE_YEAR FROM MOVIE WHERE MOVIE_NUM = 1245;
-+ - - - - - - - - - - - - +
-| MOVIE_YEAR              |
-+ - - - - - - - - - - - - +
-|       2010              |
-+ - - - - - - - - - - - - +
-1 row in set (0.019 sec)
-
+MariaDB [EliteVideoDB]> SELECT * FROM MOVIE WHERE MOVIE_NUM = 1245;
++-----------+--------------+------------+------------+-------------+------------+
+| MOVIE_NUM | MOVIE_TITLE  | MOVIE_YEAR | MOVIE_COST | MOVIE_GENRE | PRICE_CODE |
++-----------+--------------+------------+------------+-------------+------------+
+| 1245      | Time to Burn |       2010 |      45.49 | ACTION      | 1          |
++-----------+--------------+------------+------------+-------------+------------+
+1 row in set (0.001 sec)
 QUESTION 4
 
 MariaDB [elitevideodb]> SELECT * FROM MOVIE WHERE MOVIE_GENRE = 'ACTION';
@@ -405,21 +519,26 @@ MariaDB [elitevideodb]> SELECT MIN(MEM_BALANCE) AS 'MINIMUM BALANCE',MAX(MEM_BAL
 
 QUESTION 26
 
-MariaDB [elitevideodb]> SELECT R.RENT_NUM, R.RENT_DATE, DR.VID_NUM, M.MOVIE_TITLE, DR.DETAIL_DUEDATE, DR.DETAIL_RETURNDATE FROM RENTAL R JOIN DETAILRENTAL DR ON R.RENT_NUM = DR.RENT_NUM JOIN VIDEO V ON DR.VID_NUM = V.VID_NUM JOIN MOVIE M ON V.MOVIE_NUM = M.MOVIE_NUM WHERE DR.DETAIL_RETURDATE > DR.DETAIL_DUEDATE ORDER BY R.RENT_NUM, M.MOVIE_TITLE;
-+--------+---------+-------+---------------------------+--------------+------------------+
-|RENT_NUM|RENT_DATE|VID_NUM| MOVIE_TITLE               |DETAIL_DUEDATE|DETAIL_RETURNDATE |
-+--------+---------+-------+---------------------------+--------------+------------------+
-|1003    |02-MAR-16| 54325 | The Cesar Family Christmas|04-MAR-16     | 09-MAR-16        |
-|1003    |02-MAR-16| 61369 | What He Doesn't Know      |06-MAR-16     | 09-MAR-16        |
-|1003    |02-MAR-16| 61388 | Where Hope Dies           |06-MAR-16     | 09-MAR-16        |
-|1004    |02-MAR-16| 44392 | Beatnik Fever             |05-MAR-16     | 07-MAR-16        |
-|1004    |02-MAR-16| 34367 | Richard Goodhope          |05-MAR-16     | 07-MAR-16        |
-+--------+---------+--------+--------------------------+--------------+------------------+
-5 rows in set (0.012 sec)
+MariaDB [EliteVideoDB]> SELECT RENTAL.RENT_NUM,UPPER(DATE_FORMAT(RENTAL.RENT_DATE,'%d-%b-%y')) AS RENT_DATE,DETAILRENTAL.VID_NUM,MOVIE.MOVIE_TITLE,UPPER(DATE_FORMAT(DETAILRENTAL.DETAIL_DUEDATE,'%d-%b-%y')) AS DETAIL_DUEDATE,UPPER(DATE_FORMAT(DETAILRENTAL.DETAIL_RETURNDATE,'%d-%b-%y')) AS DETAIL_RETURNDATE FROM RENTAL JOIN DETAILRENTAL ON RENTAL.RENT_NUM = DETAILRENTAL.RENT_NUM JOIN VIDEO ON DETAILRENTAL.VID_NUM = VIDEO.VID_NUM JOIN MOVIE ON VIDEO.MOVIE_NUM = MOVIE.MOVIE_NUM WHERE DETAILRENTAL.DETAIL_RETURNDATE > DETAILRENTAL.DETAIL_DUEDATE ORDER BY RENTAL.RENT_NUM,MOVIE.MOVIE_TITLE;
++----------+-----------+---------+----------------------------+----------------+-------------------+
+| RENT_NUM | RENT_DATE | VID_NUM | MOVIE_TITLE                | DETAIL_DUEDATE | DETAIL_RETURNDATE |
++----------+-----------+---------+----------------------------+----------------+-------------------+
+| 1003     | 02-MAR-06 | 54325   | The Cesar Family Christmas | 04-MAR-16      | 09-MAR-16         |
+| 1003     | 02-MAR-06 | 61369   | What He Doesn't Know       | 06-MAR-16      | 09-MAR-16         |
+| 1003     | 02-MAR-06 | 61388   | Where Hope Dies            | 06-MAR-16      | 09-MAR-16         |
+| 1004     | 02-MAR-16 | 44392   | Beatnik Fever              | 05-MAR-16      | 07-MAR-16         |
+| 1004     | 02-MAR-16 | 34367   | Richard Goodhope           | 05-MAR-16      | 07-MAR-16         |
++----------+-----------+---------+----------------------------+----------------+-------------------+
+5 rows in set (0.016 sec)
 
 QUESTION 27
 
-MariaDB [elitevideodb]> SELECT R.RENT_NUM, R.RENT_DATE,M.MOVIE_TITLE,DR.DETAIL_FEE FROM RENTAL R JOIN DETAILRENTAL DR ON R.RENT_NUM = DR.RENT_NUM JOIN VIDEO V ON DR.VID_NUM = V.VID_NUM JOIN MOVIE M ON V.MOVIE_NUM = M.MOVIE_NUM WHERE DR.DETAIL_RETURNDATE <= DR.DETAIL_DUEDATE;
+MariaDB [EliteVideoDB]> SELECT RENTAL.RENT_NUM, UPPER(DATE_FORMAT(RENTAL.RENT_DATE, '%d-%b-%y')) AS RENT_DATE, MOVIE_TITLE, DETAIL_FEE
+    -> FROM RENTAL
+    -> JOIN DETAILRENTAL ON RENTAL.RENT_NUM = DETAILRENTAL.RENT_NUM
+    -> JOIN VIDEO ON DETAILRENTAL.VID_NUM = VIDEO.VID_NUM
+    -> JOIN MOVIE ON VIDEO.MOVIE_NUM = MOVIE.MOVIE_NUM
+    -> WHERE DETAIL_RETURNDATE <= DETAIL_DUEDATE;
 +----------+-----------+--------------------------+------------+
 | RENT_NUM | RENT_DATE | MOVIE_TITLE              | DETAIL_FEE |
 +----------+-----------+--------------------------+------------+
@@ -433,11 +552,11 @@ MariaDB [elitevideodb]> SELECT R.RENT_NUM, R.RENT_DATE,M.MOVIE_TITLE,DR.DETAIL_F
 | 1006     | 02-MAR-16 | Richard Goodhope         |       3.50 |
 | 1008     | 03-MAR-16 | Richard Goodhope         |       3.50 |
 +----------+-----------+--------------------------+------------+
-9 rows in set (0.002 sec)
+9 rows in set (0.001 sec))
 
 QUESTION 28
 
-MariaDB [elitevideodb]> SELECT M.MOVIE_NUM, M.MOVIE_GENRE, AVG(M2.MOVIE_COST) AS 'AVERAGE COST', M.MOVIE_COST AS 'MOVIE COST', ROUND((M.MOVIE_COST - AVG(M2.MOVIE_COST)) / AVG(M2.MOVIE_COST) * 100, 2) AS 'PERCENT DIFFERENCE' FROM MOVIE M JOIN MOVIE M2 ON M.MOVIE_GENRE = M2.MOVIE_GENRE GROUP BY M.MOVIE_NUM, M.MOVIE_GENRE, M.MOVIE_COST;
+MariaDB [EliteVideoDB]> SELECT M.MOVIE_NUM, M.MOVIE_GENRE, AVG(M2.MOVIE_COST) AS 'AVERAGE COST', M.MOVIE_COST AS 'MOVIE COST', ROUND((M.MOVIE_COST - AVG(M2.MOVIE_COST)) / AVG(M2.MOVIE_COST) * 100, 2) AS 'PERCENT DIFFERENCE' FROM MOVIE M JOIN MOVIE M2 ON M.MOVIE_GENRE = M2.MOVIE_GENRE GROUP BY M.MOVIE_NUM, M.MOVIE_GENRE, M.MOVIE_COST;
 +-----------+------------+-------------+-----------+--------------------+
 | MOVIE_NUM | MOVIE_GENRE| AVERAGE COST| MOVIE COST| PERCENT DIFFERENCE |
 +-----------+------------+-------------+-----------+--------------------+
@@ -451,5 +570,4 @@ MariaDB [elitevideodb]> SELECT M.MOVIE_NUM, M.MOVIE_GENRE, AVG(M2.MOVIE_COST) AS
 | 1246      | COMEDY     |   44.120000 |     58.29 |              32.12 |
 +-----------+------------+-------------+-----------+--------------------+
 8 rows in set (0.063 sec)
-
 
